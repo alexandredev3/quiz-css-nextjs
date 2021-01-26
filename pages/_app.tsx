@@ -1,5 +1,6 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import db from '../db.json';
+import Head from 'next/head';
 
 interface Props {
   Component: () => null;
@@ -19,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
     flex-direction: column;
     font-family: 'Lato', sans-serif;
 
-    color: ${({ theme }) => theme.colors.contrastText};
+    color: ${db.theme.colors.contrastText};
   }
 
   html, body {
@@ -38,6 +39,23 @@ const theme = db.theme;
 export default function App({ Component, pageProps }: Props) {
   return (
     <>
+      <Head>
+        <meta name="author" content="Alexandre Costa" />
+        <meta name="keywords" content="quiz-alura, alura, nextjs, react" />
+        <meta name="description" content="Quiz CSS da Alura, Feito por Alexandre com 💚" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://quiz-css-alexandredev3.vercel.app/" />
+        <meta property="og:title" content="Quiz CSS da Alura" />
+        <meta property="og:description" content="Quiz CSS da Alura, Feito por Alexandre com 💚" />
+        <meta property="og:image" content={db.bg} />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://quiz-css-alexandredev3.vercel.app/" />
+        <meta property="twitter:title" content="Quiz CSS da Alura" />
+        <meta property="twitter:description" content="Quiz CSS da Alura, Feito por Alexandre com 💚" />
+        <meta property="twitter:image" content={db.bg} />
+      </Head>
       <ThemeProvider
         theme={theme}
       >
