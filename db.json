@@ -36,7 +36,11 @@
       "mainBg": "#171B35",
       "contrastText": "#FFFFFF",
       "wrong": "#FF5722",
-      "success": "#4CAF50"
+      "success": "#4CAF50",
+      "disableButton": "#979797",
+      "buttonFilled": "#E91E63",
+      "inputBorder": "#292e52",
+      "inputPlaceholder": "#A0A6CB"
     },
     "borderRadius": "4px"
   }

@@ -1,11 +1,13 @@
-import styled from 'styled-components';
-import db from '../db.json';
 import Head from 'next/head';
+import styled from 'styled-components';
+import { useCallback, useState, FormEvent, ChangeEvent } from 'react';
+import { useRouter } from 'next/router';
 
+import db from '../db.json';
 import Footer from '../src/components/Footer';
 import GitHubCorner from '../src/components/GitHubCorner';
-import Widget from '../src/components/Widget';
 import QuizBackground from '../src/components/QuizBackground';
+import Widget from '../src/components/Widget';
 // import QuizLogo from '../src/components/QuizLogo';
 
 const QuizContainer = styled.div`
@@ -20,10 +22,32 @@ const QuizContainer = styled.div`
 `;
 
 export default function Home() {
+  const router = useRouter();
+
+  const [name, setName] = useState('');
+  const [isFocus, setIsFocus] = useState(false);
+  const [isFilled, setIsFilled] = useState(false);
+
+  const handleInputFocus = useCallback(() => {
+    setIsFocus(true);
+  }, [isFocus]);
+
+  const handleInputBlur = useCallback(() => {
+    setIsFocus(false);
+
+    setIsFilled(!!name);
+  }, [isFilled, isFocus, name])
+
+  const handleSubmit = useCallback((event: FormEvent) => {
+    event.preventDefault();
+    
+    router.push(`/quiz?name=${name}`)
+  }, [name]);
+
   return (
     <>
       <Head>
-        <title>Home</title>
+        <title>AluraQuiz - Modelo Base</title>
       </Head>
       <QuizBackground backgroundImage={db.bg}>
         <QuizContainer>
@@ -32,14 +56,37 @@ export default function Home() {
               <h1>Quiz CSS da Alura</h1>
             </Widget.Header>
             <Widget.Content>
-              <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, minus.</p>
+
+              <Widget.Form
+                onSubmit={handleSubmit}
+                isFocus={isFocus}
+                isFilled={isFilled}
+              >
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium, aspernatur.</p>
+                <input 
+                  placeholder="Diz aí seu nome pra jogar :)"
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event?.target.value)}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                  value={name}
+                />
+                <button
+                  disabled={name.length === 0}
+                  type="submit"
+                >
+                  JOGAR
+                </button>
+              </Widget.Form>
             </Widget.Content>
           </Widget>
 
           <Widget>
             <Widget.Content>
               <h1>Quizes da Galera</h1>
-              <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempora, minus.</p>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Tempora, minus.
+              </p>
             </Widget.Content>
           </Widget>
           <Footer />
@@ -48,5 +95,5 @@ export default function Home() {
         <GitHubCorner projectUrl="https://github.com/alexandredev3" />
       </QuizBackground>
     </>
-  )
+  );
 }
