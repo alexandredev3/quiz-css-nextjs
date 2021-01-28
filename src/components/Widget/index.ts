@@ -1,14 +1,10 @@
-import styled, { StyledComponentBase, css } from 'styled-components';
-
-interface Props {
-  isFocus: boolean;
-  isFilled: boolean;
-}
+import styled, { StyledComponentBase } from 'styled-components';
 
 interface IWidget extends StyledComponentBase<'div', any, {}> {
   Header?: any;
   Content?: any;
   Form?: any;
+  Topic?: any;
 }
 
 const Widget: IWidget = styled.div`
@@ -37,7 +33,7 @@ const Widget: IWidget = styled.div`
 
 Widget.Header = styled.header`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   padding: 18px 32px;
   background-color: ${({ theme }) => theme.colors.primary};
@@ -63,7 +59,7 @@ Widget.Content = styled.div`
   }
 `;
 
-Widget.Form = styled.form<Props>`
+Widget.Form = styled.form`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -73,34 +69,6 @@ Widget.Form = styled.form<Props>`
     font-size: 16px;
     margin-bottom: 32px;
     margin-top: -1px;
-  }
-
-  > input {
-    outline: 0;
-    height: 42px;
-    background: transparent;
-    border-radius: 4px;
-    border: 1.8px solid ${({ theme }) => theme.colors.inputBorder};
-    padding: 15px;
-    margin-bottom: 26px;
-    color: ${({ theme }) => theme.colors.contrastText};
-    font-size: 14px;
-
-    &::placeholder {
-      color: ${({ theme }) => theme.colors.inputPlaceholder};
-    }
-
-    ${({ isFilled }) =>
-      isFilled &&
-      css`
-        border: 1.8px solid #4caf50;
-      `};
-
-    ${({ isFocus }) =>
-      isFocus &&
-      css`
-        border: 1.8px solid #4caf50;
-      `};
   }
 
   > button {
@@ -118,6 +86,24 @@ Widget.Form = styled.form<Props>`
     }
 
     box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.12), 0px 2px 2px rgba(0, 0, 0, 0.24);
+  }
+`;
+
+Widget.Topic = styled.a`
+  outline: 0;
+  text-decoration: none;
+  color: ${({ theme }) => theme.colors.contrastText};
+  background-color: ${({ theme }) => `${theme.colors.primary}40`};
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border-radius: ${({ theme }) => theme.borderRadius};
+  transition: 0.3s;
+  display: block;
+
+  &:hover,
+  &:focus {
+    opacity: 0.5;
   }
 `;
 

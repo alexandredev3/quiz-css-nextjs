@@ -1,48 +1,30 @@
 import Head from 'next/head';
-import styled from 'styled-components';
-import { useCallback, useState, FormEvent, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
+import { useCallback, useState, FormEvent, ChangeEvent } from 'react';
 
 import db from '../db.json';
+import Button from '../src/components/Button';
 import Footer from '../src/components/Footer';
 import GitHubCorner from '../src/components/GitHubCorner';
+import Input from '../src/components/Input';
 import QuizBackground from '../src/components/QuizBackground';
+import QuizContainer from '../src/components/QuizContainer';
+import QuizLogo from '../src/components/QuizLogo';
 import Widget from '../src/components/Widget';
-// import QuizLogo from '../src/components/QuizLogo';
-
-const QuizContainer = styled.div`
-  width: 100%;
-  max-width: 350px;
-  padding-top: 45px;
-  margin: auto 10%;
-  @media screen and (max-width: 500px) {
-    margin: auto;
-    padding: 15px;
-  }
-`;
 
 export default function Home() {
   const router = useRouter();
 
   const [name, setName] = useState('');
-  const [isFocus, setIsFocus] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
 
-  const handleInputFocus = useCallback(() => {
-    setIsFocus(true);
-  }, [isFocus]);
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
 
-  const handleInputBlur = useCallback(() => {
-    setIsFocus(false);
-
-    setIsFilled(!!name);
-  }, [isFilled, isFocus, name])
-
-  const handleSubmit = useCallback((event: FormEvent) => {
-    event.preventDefault();
-    
-    router.push(`/quiz?name=${name}`)
-  }, [name]);
+      router.push(`/quiz?name=${name}`);
+    },
+    [name]
+  );
 
   return (
     <>
@@ -51,31 +33,28 @@ export default function Home() {
       </Head>
       <QuizBackground backgroundImage={db.bg}>
         <QuizContainer>
+          <QuizLogo className="logo" />
           <Widget>
             <Widget.Header>
               <h1>Quiz CSS da Alura</h1>
             </Widget.Header>
             <Widget.Content>
-
-              <Widget.Form
-                onSubmit={handleSubmit}
-                isFocus={isFocus}
-                isFilled={isFilled}
-              >
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium, aspernatur.</p>
-                <input 
+              <Widget.Form onSubmit={handleSubmit}>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Praesentium, aspernatur.
+                </p>
+                <Input
                   placeholder="Diz aí seu nome pra jogar :)"
-                  onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event?.target.value)}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                    // eslint-disable-next-line prettier/prettier
+                    setName(event?.target.value)}
                   value={name}
+                  name="name"
                 />
-                <button
-                  disabled={name.length === 0}
-                  type="submit"
-                >
-                  JOGAR
-                </button>
+                <Button disabled={name.length === 0} type="submit">
+                  {`JOGAR ${name}`}
+                </Button>
               </Widget.Form>
             </Widget.Content>
           </Widget>

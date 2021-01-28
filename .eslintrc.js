@@ -35,12 +35,7 @@ module.exports = {
         alphabetize: { order: 'asc', ignoreCase: true },
       },
     ],
-    settings: {
-      'import/resolver': {
-        node: {
-          extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        },
-      },
-    },
+    'import/extensions': 'off',
+    'import/no-unresolved': 'off',
   },
 };
