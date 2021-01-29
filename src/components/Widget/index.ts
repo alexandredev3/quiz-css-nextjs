@@ -11,8 +11,8 @@ interface IWidget extends StyledComponentBase<'div', any, {}> {
 
 interface Props {
   selected: boolean;
-  correct: boolean;
-  wrong: boolean;
+  success: boolean;
+  error: boolean;
 }
 
 const Widget: IWidget = styled.div`
@@ -41,7 +41,6 @@ const Widget: IWidget = styled.div`
 
 Widget.Header = styled.header`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 18px 32px;
   background-color: ${({ theme }) => theme.colors.primary};
@@ -120,9 +119,9 @@ Widget.Topic = styled.a<Props>`
   background-color: ${({ theme }) => `${theme.colors.primary}40`};
   background-color: ${({ theme, selected }) =>
     selected && `${theme.colors.primary}`};
-  background-color: ${({ theme, correct }) =>
-    correct && `${theme.colors.success}`};
-  background-color: ${({ theme, wrong }) => wrong && `${theme.colors.wrong}`};
+  background-color: ${({ theme, success }) =>
+    success && `${theme.colors.success}`};
+  background-color: ${({ theme, error }) => error && `${theme.colors.wrong}`};
 `;
 
 Widget.Button = styled.div`

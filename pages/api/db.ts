@@ -10,6 +10,7 @@ export default function dbHandler(request: NowRequest, response: NowResponse) {
     return;
   }
 
+  // @ts-ignore
   response.setHeader('Access-Control-Allow-Credentials', true);
   response.setHeader('Access-Control-Allow-Origin', '*');
   response.setHeader(

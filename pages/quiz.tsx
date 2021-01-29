@@ -1,7 +1,9 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 
 import db from '../db.json';
+import api from '../services/api';
 import LoadingWidget from '../src/components/LoadingWidget';
 import QuestionWidget from '../src/components/QuestionWidget';
 import QuizBackground from '../src/components/QuizBackground';
@@ -13,24 +15,46 @@ interface Props {
   results: Array<boolean>;
 }
 
+interface Questions {
+  image: string;
+  title: string;
+  description: string;
+  answer: number;
+  alternatives: string[];
+}
+
 function ResultWidget({ results }: Props) {
+  const { query } = useRouter();
+
   const correctAlternatives = results.filter((result) => result).length;
+  const totalPoints = correctAlternatives * 100;
 
   return (
     <Widget>
       <Widget.Header>Tela de Resultado:</Widget.Header>
 
       <Widget.Content>
-        <p>{`Voce acertou ${correctAlternatives} perguntas`}</p>
+        {totalPoints === 0 ? (
+          <>
+            <p>Estude mais, {query.name}!</p>
+            <h1>Você fez 0 pontos, que pena :(</h1>
+          </>
+        ) : (
+          <>
+            <p>Mandou bem, {query.name}!</p>
+            <h1>Você fez {totalPoints} pontos, Parabéns :)</h1>
+          </>
+        )}
         <ul>
           {results.map((result, index) => {
             const resultId = `result__${index}`;
             const resultPosition = index + 1;
-            const resultPositionHasTwoSquares = resultPosition < 10 ? '0' : '';
+            const resultPositionHasTwoSquares = resultPosition < 10 && '0';
 
             return (
               <li key={resultId}>
-                {`#${resultPositionHasTwoSquares}${resultPosition} Resultado: `}
+                #{resultPositionHasTwoSquares}
+                {resultPosition} Resultado:{' '}
                 {result ? 'Acertou Viseravel!' : 'Errou!'}
               </li>
             );
@@ -51,10 +75,28 @@ export default function QuizPage() {
   const [screenState, setScreenState] = useState(LOADING);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [results, setResults] = useState<Array<boolean>>([]);
+  const [questions, setQuestions] = useState<Questions[]>([]);
 
   const questionIndex = currentQuestion;
-  const question = db.questions[questionIndex];
-  const totalQuestions = db.questions.length;
+  const question = questions[questionIndex];
+  const totalQuestions = questions.length;
+
+  useEffect(() => {
+    api
+      .get('/db')
+      .then((response) => {
+        const data = response.data.questions;
+
+        setQuestions(data);
+        return setScreenState(QUIZ);
+      })
+      .catch((error) => {
+        alert(
+          'Ocorreu um error inesperado durante o processo de carregar as perguntas.'
+        );
+        console.log(error);
+      });
+  }, []);
 
   const handleAddResult = useCallback(
     (result: boolean) => {
@@ -62,12 +104,6 @@ export default function QuizPage() {
     },
     [results]
   );
-
-  useEffect(() => {
-    setTimeout(() => {
-      setScreenState(QUIZ);
-    }, 1000);
-  }, []);
 
   const handleSubmitQuiz = useCallback(() => {
     const nextQuestion = questionIndex + 1;
@@ -77,7 +113,7 @@ export default function QuizPage() {
     }
 
     return setScreenState(RESULT);
-  }, [questionIndex, currentQuestion]);
+  }, [questionIndex, currentQuestion, questions]);
 
   return (
     <>

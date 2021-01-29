@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { FormEvent, useState, useCallback } from 'react';
 
 import Button from '../Button';
@@ -29,12 +28,11 @@ export default function QuestionWidget({
   onSubmit,
   handleAddResult,
 }: Props) {
-  const { CORRECT, WRONG } = {
-    CORRECT: 'CORRECT',
-    WRONG: 'WRONG',
+  const { SUCCESS, ERROR } = {
+    SUCCESS: 'SUCCESS',
+    ERROR: 'ERROR',
   };
 
-  const { query } = useRouter();
   const [selectedAlternative, setSelectedAlternative] = useState<number | null>(
     null
   );
@@ -49,22 +47,22 @@ export default function QuestionWidget({
       event.preventDefault();
 
       if (selectedAlternative || !hasAlternativeSelected) {
-        setSelectedAlternative(null);
-
         if (isCorrect) {
-          setResultState(CORRECT);
+          setResultState(SUCCESS);
           handleAddResult(isCorrect);
 
           return setTimeout(() => {
             setResultState(null);
+            setSelectedAlternative(null);
             onSubmit();
           }, 1000);
         }
 
-        setResultState(WRONG);
+        setResultState(ERROR);
         handleAddResult(isCorrect);
         return setTimeout(() => {
           setResultState(null);
+          setSelectedAlternative(null);
           onSubmit();
         }, 1000);
       }
@@ -79,7 +77,6 @@ export default function QuestionWidget({
       <Widget.Header>
         {/* <BackLinkArrow href="/" /> */}
         <h3>{`Pergunta ${questionIndex + 1} de ${totalQuestions}`}</h3>
-        <h3>{query.name}</h3>
       </Widget.Header>
 
       <img
@@ -100,10 +97,10 @@ export default function QuestionWidget({
           {question.alternatives.map((alternative, index) => {
             const alternativeId = `alternative__${index}`;
             const alternativeSelected = index === selectedAlternative;
-            const alternativeCorrect =
-              resultState === 'CORRECT' && alternativeSelected;
-            const alternativeWrong =
-              resultState === 'WRONG' && alternativeSelected;
+            const alternativeSuccess =
+              resultState === 'SUCCESS' && alternativeSelected;
+            const alternativeError =
+              resultState === 'ERROR' && alternativeSelected;
 
             return (
               <Widget.Topic
@@ -111,8 +108,8 @@ export default function QuestionWidget({
                 htmlFor={alternativeId}
                 key={alternativeId}
                 selected={alternativeSelected}
-                correct={alternativeCorrect}
-                wrong={alternativeWrong}
+                success={alternativeSuccess}
+                error={alternativeError}
               >
                 <input
                   id={alternativeId}
@@ -132,9 +129,9 @@ export default function QuestionWidget({
               </Button>
             )}
 
-            {resultState === 'CORRECT' && <CorrectIcon />}
+            {resultState === 'SUCCESS' && <CorrectIcon />}
 
-            {resultState === 'WRONG' && <WrongIcon />}
+            {resultState === 'ERROR' && <WrongIcon />}
           </Widget.Button>
         </Widget.Form>
       </Widget.Content>
