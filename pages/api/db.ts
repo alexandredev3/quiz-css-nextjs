@@ -18,5 +18,22 @@ export default function dbHandler(request: NowRequest, response: NowResponse) {
     'GET,OPTIONS,PATCH,DELETE,POST,PUT'
   );
 
-  response.json(db);
+  const {
+    bg,
+    description,
+    external: externalQuiz,
+    questions,
+    theme,
+    title,
+  } = db;
+  const external = externalQuiz.length === 0 ? null : externalQuiz;
+
+  response.json({
+    bg,
+    description,
+    external,
+    questions,
+    theme,
+    title,
+  });
 }

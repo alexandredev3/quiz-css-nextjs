@@ -52,6 +52,11 @@ Widget.Header = styled.header`
 
 Widget.Content = styled.div`
   padding: 24px 32px 32px 32px;
+
+  > p {
+    line-height: 17px;
+  }
+
   & > *:first-child {
     margin-top: 0;
   }
@@ -109,6 +114,11 @@ Widget.Topic = styled.a<Props>`
 
   > input {
     display: none;
+  }
+
+  a {
+    text-decoration: none;
+    color: #ffff;
   }
 
   &:hover,

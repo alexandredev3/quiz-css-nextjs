@@ -1,9 +1,9 @@
+import axios from 'axios';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback } from 'react';
 
 import db from '../db.json';
-import api from '../services/api';
 import LoadingWidget from '../src/components/LoadingWidget';
 import QuestionWidget from '../src/components/QuestionWidget';
 import QuizBackground from '../src/components/QuizBackground';
@@ -15,12 +15,15 @@ interface Props {
   results: Array<boolean>;
 }
 
-interface Questions {
-  image: string;
-  title: string;
-  description: string;
-  answer: number;
-  alternatives: string[];
+interface ApiResponse {
+  bg: string | null;
+  questions: Array<{
+    image: string;
+    title: string;
+    description: string;
+    answer: number;
+    alternatives: string[];
+  }>;
 }
 
 function ResultWidget({ results }: Props) {
@@ -71,23 +74,34 @@ export default function QuizPage() {
     LOADING: 'LOADING',
     RESULT: 'RESULT',
   };
+  const { query, push } = useRouter();
+
+  const externalApiBaseURL = query?.apiUrl as string;
+  const internalApiBaseURL = `/api`;
+  const api = axios.create({
+    baseURL: externalApiBaseURL || internalApiBaseURL,
+  });
 
   const [screenState, setScreenState] = useState(LOADING);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [results, setResults] = useState<Array<boolean>>([]);
-  const [questions, setQuestions] = useState<Questions[]>([]);
+  const [apiResponse, setApiResponse] = useState<ApiResponse>({
+    bg: null,
+    questions: [],
+  });
 
   const questionIndex = currentQuestion;
-  const question = questions[questionIndex];
-  const totalQuestions = questions.length;
+  const question =
+    apiResponse?.questions[questionIndex] || db.questions[questionIndex];
+  const totalQuestions = apiResponse?.questions.length;
 
   useEffect(() => {
     api
       .get('/db')
       .then((response) => {
-        const data = response.data.questions;
+        const { data } = response;
 
-        setQuestions(data);
+        setApiResponse(data);
         return setScreenState(QUIZ);
       })
       .catch((error) => {
@@ -95,6 +109,7 @@ export default function QuizPage() {
           'Ocorreu um error inesperado durante o processo de carregar as perguntas.'
         );
         console.log(error);
+        return push('/');
       });
   }, []);
 
@@ -113,14 +128,14 @@ export default function QuizPage() {
     }
 
     return setScreenState(RESULT);
-  }, [questionIndex, currentQuestion, questions]);
+  }, [questionIndex, currentQuestion, apiResponse]);
 
   return (
     <>
       <Head>
         <title>AluraQuiz - Modelo Base</title>
       </Head>
-      <QuizBackground backgroundImage={db.bg}>
+      <QuizBackground backgroundImage={apiResponse?.bg || db.bg}>
         <QuizContainer>
           <QuizLogo className="logo" />
           {screenState === 'LOADING' && <LoadingWidget />}

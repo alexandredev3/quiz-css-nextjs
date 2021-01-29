@@ -1,9 +1,17 @@
+import axios from 'axios';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useCallback, useState, FormEvent, ChangeEvent } from 'react';
+import {
+  useCallback,
+  useState,
+  useEffect,
+  FormEvent,
+  ChangeEvent,
+} from 'react';
 
 import db from '../db.json';
 import Button from '../src/components/Button';
+import ExternalQuiz from '../src/components/ExternalQuiz';
 import Footer from '../src/components/Footer';
 import GitHubCorner from '../src/components/GitHubCorner';
 import Input from '../src/components/Input';
@@ -16,12 +24,43 @@ export default function Home() {
   const router = useRouter();
 
   const [name, setName] = useState('');
+  const [quizExternal, setQuizExternal] = useState<string[] | null>([]);
+
+  const baseURL = `/api`;
+  const api = axios.create({
+    baseURL,
+  });
+
+  useEffect(() => {
+    api
+      .get('/db')
+      .then((response) => {
+        const data = response.data.external;
+
+        setQuizExternal(data);
+      })
+      .catch((error) => {
+        alert('Ocorreu um erro inesperado!');
+        return console.log(error);
+      });
+  }, []);
 
   const handleSubmit = useCallback(
-    (event: FormEvent) => {
-      event.preventDefault();
+    (event?: FormEvent, quizUrl?: string) => {
+      event?.preventDefault();
 
-      router.push(`/quiz?name=${name}`);
+      const apiUrl = `${quizUrl}api`;
+
+      // fazer validação no Input
+      if (!name) {
+        return alert('Coloque um nome!!');
+      }
+
+      if (quizUrl) {
+        return router.push(`/quiz?name=${name}&apiUrl=${apiUrl}`);
+      }
+
+      return router.push(`/quiz?name=${name}`);
     },
     [name]
   );
@@ -59,15 +98,9 @@ export default function Home() {
             </Widget.Content>
           </Widget>
 
-          <Widget>
-            <Widget.Content>
-              <h1>Quizes da Galera</h1>
-              <p>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Tempora, minus.
-              </p>
-            </Widget.Content>
-          </Widget>
+          {quizExternal && (
+            <ExternalQuiz quizExternal={quizExternal} onSubmit={handleSubmit} />
+          )}
           <Footer />
         </QuizContainer>
 
