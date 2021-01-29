@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import styled, { StyledComponentBase } from 'styled-components';
 
 interface IWidget extends StyledComponentBase<'div', any, {}> {
@@ -5,6 +6,13 @@ interface IWidget extends StyledComponentBase<'div', any, {}> {
   Content?: any;
   Form?: any;
   Topic?: any;
+  Button?: any;
+}
+
+interface Props {
+  selected: boolean;
+  correct: boolean;
+  wrong: boolean;
 }
 
 const Widget: IWidget = styled.div`
@@ -89,11 +97,10 @@ Widget.Form = styled.form`
   }
 `;
 
-Widget.Topic = styled.a`
+Widget.Topic = styled.a<Props>`
   outline: 0;
   text-decoration: none;
   color: ${({ theme }) => theme.colors.contrastText};
-  background-color: ${({ theme }) => `${theme.colors.primary}40`};
   padding: 10px 15px;
   margin-bottom: 8px;
   cursor: pointer;
@@ -101,10 +108,29 @@ Widget.Topic = styled.a`
   transition: 0.3s;
   display: block;
 
+  > input {
+    display: none;
+  }
+
   &:hover,
   &:focus {
     opacity: 0.5;
   }
+
+  background-color: ${({ theme }) => `${theme.colors.primary}40`};
+  background-color: ${({ theme, selected }) =>
+    selected && `${theme.colors.primary}`};
+  background-color: ${({ theme, correct }) =>
+    correct && `${theme.colors.success}`};
+  background-color: ${({ theme, wrong }) => wrong && `${theme.colors.wrong}`};
+`;
+
+Widget.Button = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 16px;
 `;
 
 export default Widget;

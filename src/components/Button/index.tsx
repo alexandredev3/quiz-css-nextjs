@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Button = styled.button`
-  background-color: ${({ theme }) => theme.colors.secondary};
+  background-color: ${({ theme }) => theme.colors.buttonFilled};
   color: ${({ theme }) => theme.colors.contrastText};
   border-radius: ${({ theme }) => theme.borderRadius};
   border: 0;
@@ -12,11 +12,11 @@ const Button = styled.button`
   line-height: 1;
   text-transform: uppercase;
   outline: 0;
-  transition: .3s;
+  transition: 0.3s;
   cursor: pointer;
   &:hover,
   &:focus {
-    opacity: .5;
+    opacity: 0.5;
   }
   &:disabled {
     background-color: #979797;
