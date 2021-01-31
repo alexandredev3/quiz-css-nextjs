@@ -1,5 +1,6 @@
 import { FormEvent, useState, useCallback } from 'react';
 
+import BackLinkArrow from '../BackLinkArrow';
 import Button from '../Button';
 import CorrectIcon from '../CorrectIcon';
 import Widget from '../Widget';
@@ -76,6 +77,7 @@ export default function QuestionWidget({
     <Widget>
       <Widget.Header>
         {/* <BackLinkArrow href="/" /> */}
+        <BackLinkArrow href="/" />
         <h3>{`Pergunta ${questionIndex + 1} de ${totalQuestions}`}</h3>
       </Widget.Header>
 

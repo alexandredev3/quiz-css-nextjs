@@ -1,6 +1,15 @@
+/* eslint-disable react/require-default-props */
+import { motion } from 'framer-motion';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-const Button = styled.button`
+interface Props {
+  children: ReactNode;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset' | undefined;
+}
+
+const ButtonBase = styled.button`
   background-color: ${({ theme }) => theme.colors.buttonFilled};
   color: ${({ theme }) => theme.colors.contrastText};
   border-radius: ${({ theme }) => theme.borderRadius};
@@ -22,6 +31,27 @@ const Button = styled.button`
     background-color: #979797;
     cursor: not-allowed;
   }
+
+  a {
+    text-decoration: none;
+    color: ${({ theme }) => theme.colors.contrastText};
+  }
 `;
 
-export default Button;
+export default function Button({ children, disabled, type }: Props) {
+  return (
+    <ButtonBase
+      as={motion.button}
+      whileTap={{
+        scale: 0.9,
+      }}
+      whileHover={{
+        scale: 1.04,
+      }}
+      disabled={disabled}
+      type={type}
+    >
+      {children}
+    </ButtonBase>
+  );
+}

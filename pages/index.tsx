@@ -1,13 +1,7 @@
-import axios from 'axios';
+import { motion } from 'framer-motion';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import {
-  useCallback,
-  useState,
-  useEffect,
-  FormEvent,
-  ChangeEvent,
-} from 'react';
+import { useCallback, useState, FormEvent, ChangeEvent } from 'react';
 
 import db from '../db.json';
 import Button from '../src/components/Button';
@@ -24,40 +18,14 @@ export default function Home() {
   const router = useRouter();
 
   const [name, setName] = useState('');
-  const [quizExternal, setQuizExternal] = useState<string[] | null>([]);
-
-  const baseURL = `/api`;
-  const api = axios.create({
-    baseURL,
-  });
-
-  useEffect(() => {
-    api
-      .get('/db')
-      .then((response) => {
-        const data = response.data.external;
-
-        setQuizExternal(data);
-      })
-      .catch((error) => {
-        alert('Ocorreu um erro inesperado!');
-        return console.log(error);
-      });
-  }, []);
 
   const handleSubmit = useCallback(
-    (event?: FormEvent, quizUrl?: string) => {
+    (event: FormEvent) => {
       event?.preventDefault();
-
-      const apiUrl = `${quizUrl}api`;
 
       // fazer validação no Input
       if (!name) {
         return alert('Coloque um nome!!');
-      }
-
-      if (quizUrl) {
-        return router.push(`/quiz?name=${name}&apiUrl=${apiUrl}`);
       }
 
       return router.push(`/quiz?name=${name}`);
@@ -72,8 +40,52 @@ export default function Home() {
       </Head>
       <QuizBackground backgroundImage={db.bg}>
         <QuizContainer>
-          <QuizLogo className="logo" />
-          <Widget>
+          <motion.div
+            transition={{
+              duration: 0.3,
+              delay: 0.3,
+              damping: 50,
+            }}
+            variants={{
+              show: {
+                opacity: 1,
+              },
+              hidden: {
+                opacity: 0,
+              },
+            }}
+            initial="hidden"
+            animate="show"
+          >
+            <QuizLogo className="logo" />
+          </motion.div>
+          <Widget
+            as={motion.section}
+            transition={{
+              type: 'spring',
+              duration: 0.4,
+              stiffness: 500,
+              damping: 20,
+            }}
+            variants={{
+              show: {
+                y: 0,
+                visibility: 'visible',
+                rotate: '0deg',
+                display: 'block',
+                opacity: 1,
+              },
+              hidden: {
+                display: 'none',
+                visibility: 'hidden',
+                rotate: '30deg',
+                y: '200px',
+                opacity: 0,
+              },
+            }}
+            initial="hidden"
+            animate="show"
+          >
             <Widget.Header>
               <h1>Quiz CSS da Alura</h1>
             </Widget.Header>
@@ -91,17 +103,64 @@ export default function Home() {
                   value={name}
                   name="name"
                 />
-                <Button disabled={name.length === 0} type="submit">
-                  {`JOGAR ${name}`}
-                </Button>
+                <Button disabled={name.length === 0}>{`JOGAR ${name}`}</Button>
               </Widget.Form>
             </Widget.Content>
           </Widget>
 
-          {quizExternal && (
-            <ExternalQuiz quizExternal={quizExternal} onSubmit={handleSubmit} />
-          )}
-          <Footer />
+          <motion.div
+            transition={{
+              delay: 0.2,
+              duration: 0.4,
+              damping: 50,
+            }}
+            variants={{
+              show: {
+                y: 0,
+                display: 'block',
+                visibility: 'visible',
+                rotate: '0deg',
+                opacity: 1,
+              },
+              hidden: {
+                y: '200px',
+                display: 'none',
+                visibility: 'hidden',
+                rotate: '-30deg',
+                opacity: 0,
+              },
+            }}
+            initial="hidden"
+            animate="show"
+          >
+            <ExternalQuiz quizExternal={db.external} playerName={name} />
+          </motion.div>
+          <Footer
+            as={motion.footer}
+            variants={{
+              show: {
+                y: 0,
+                visibility: 'visible',
+                display: 'block',
+                rotate: '0deg',
+                transition: {
+                  duration: 0.4,
+                  delay: 0.3,
+                  damping: 50,
+                },
+                opacity: 1,
+              },
+              hidden: {
+                display: 'none',
+                visibility: 'hidden',
+                y: '200px',
+                rotate: '30deg',
+                opacity: 0,
+              },
+            }}
+            initial="hidden"
+            animate="show"
+          />
         </QuizContainer>
 
         <GitHubCorner projectUrl="https://github.com/alexandredev3" />

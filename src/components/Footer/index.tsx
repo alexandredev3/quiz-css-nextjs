@@ -7,6 +7,7 @@ const FooterWrapper = styled.footer`
   display: flex;
   align-items: center;
   border-radius: 4px;
+  margin-bottom: 28px;
 
   img {
     width: 58px;
@@ -38,7 +39,7 @@ export default function Footer(props: any) {
         />
       </a>
       <p>
-        Orgulhosamente criado durante a {' '}
+        Orgulhosamente criado durante a{' '}
         <a href="https://www.alura.com.br/">
           <span>Imersão React da Alura</span>
         </a>

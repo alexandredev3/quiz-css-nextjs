@@ -1,41 +1,54 @@
-import styled, { keyframes } from 'styled-components';
+import Lottie, { Options } from 'react-lottie';
+import styled from 'styled-components';
 
+import brainAnimation from '../../../brain-animation.json';
+import loadingAnimation from '../../../loading-animation.json';
 import Widget from '../Widget';
-
-const spinAnimation = keyframes`
-  0 {
-    transform:rotate(0deg)
-  }
-  100% {
-    transform:rotate(360deg)
-  }
-`;
 
 const SpinnerContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const Spinner = styled.div`
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-
-  border: 8px solid ${({ theme }) => theme.colors.primary};
-  border-top: 8px solid ${({ theme }) => theme.colors.mainBg};
-
-  animation: ${spinAnimation} 1.5s linear infinite;
+  flex-direction: column;
 `;
 
 export default function LoadingWidget() {
+  const brainAnimationOption: Options = {
+    loop: true,
+    autoplay: true,
+    animationData: brainAnimation,
+  };
+
+  const loadingAnimationOption: Options = {
+    loop: true,
+    autoplay: true,
+    animationData: loadingAnimation,
+  };
+
   return (
     <Widget>
       <Widget.Header>Carregando...</Widget.Header>
 
       <Widget.Content>
         <SpinnerContainer>
-          <Spinner />
+          <Lottie
+            options={brainAnimationOption}
+            width={300}
+            height={300}
+            style={{
+              marginTop: '-78px',
+            }}
+          />
+          <Lottie
+            options={loadingAnimationOption}
+            width={200}
+            height={200}
+            style={{
+              marginTop: '-165px',
+              marginBottom: '-60px',
+              marginLeft: '46px',
+            }}
+          />
         </SpinnerContainer>
       </Widget.Content>
     </Widget>

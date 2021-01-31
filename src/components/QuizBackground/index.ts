@@ -6,6 +6,7 @@ interface Props {
 
 const QuizBackground = styled.div<Props>`
   width: 100%;
+  height: 120vh;
   background-size: cover;
   background-position: center;
   background-image: url(${({ backgroundImage }) => backgroundImage});
