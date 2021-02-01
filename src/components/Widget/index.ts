@@ -6,7 +6,7 @@ interface IWidget extends StyledComponentBase<'div', any, {}> {
   Content?: any;
   Form?: any;
   Topic?: any;
-  Button?: any;
+  Icons?: any;
 }
 
 interface Props {
@@ -134,7 +134,7 @@ Widget.Topic = styled.a<Props>`
   background-color: ${({ theme, error }) => error && `${theme.colors.wrong}`};
 `;
 
-Widget.Button = styled.div`
+Widget.Icons = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
+import { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useCallback, useState, FormEvent, ChangeEvent } from 'react';
+import { useCallback, useState, useMemo, FormEvent, ChangeEvent } from 'react';
 
 import db from '../db.json';
+import api from '../services/api';
 import Button from '../src/components/Button';
 import ExternalQuiz from '../src/components/ExternalQuiz';
 import Footer from '../src/components/Footer';
@@ -14,20 +16,75 @@ import QuizContainer from '../src/components/QuizContainer';
 import QuizLogo from '../src/components/QuizLogo';
 import Widget from '../src/components/Widget';
 
-export default function Home() {
+export interface ExternalDB {
+  data: Array<{
+    _id: string;
+    bg: string;
+    author: string;
+    title: string;
+    url: string;
+    theme: any;
+    questions: Array<{
+      image: string;
+      title: string;
+      description: string;
+      answer: number;
+      alternatives: string[];
+    }>;
+  }>;
+}
+
+export async function getServerSideProps() {
+  const response = await api.get('/externalDb');
+
+  const data: ExternalDB = response.data;
+
+  return {
+    props: {
+      data,
+    },
+  };
+}
+
+export default function Home({
+  data,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
 
   const [name, setName] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  useMemo(() => {
+    const nameIsString = typeof name !== 'string';
+    const nameHasThreeCharacters = name.length < 3;
+    const nameHasEighteenCharacters = name.length > 18;
+
+    if (!name) {
+      return setError('Coloque um nome para Jogar!');
+    }
+    if (nameIsString) {
+      return setError('Seu nome teve conter pelo menos uma letra');
+    }
+    if (nameHasThreeCharacters) {
+      return setError('Seu nome tem que ter pelos 3 caracteres');
+    }
+    if (nameHasEighteenCharacters) {
+      return setError('Seu nome teve ser abaixo de 18 caracteres');
+    }
+
+    return setError(null);
+  }, [name]);
 
   const handleSubmit = useCallback(
     (event: FormEvent) => {
       event?.preventDefault();
 
       // fazer validação no Input
-      if (!name) {
-        return alert('Coloque um nome!!');
+      if (error) {
+        return;
       }
 
+      // eslint-disable-next-line consistent-return
       return router.push(`/quiz?name=${name}`);
     },
     [name]
@@ -96,6 +153,7 @@ export default function Home() {
                   Praesentium, aspernatur.
                 </p>
                 <Input
+                  error={error}
                   placeholder="Diz aí seu nome pra jogar :)"
                   onChange={(event: ChangeEvent<HTMLInputElement>) =>
                     // eslint-disable-next-line prettier/prettier
@@ -103,7 +161,7 @@ export default function Home() {
                   value={name}
                   name="name"
                 />
-                <Button disabled={name.length === 0}>{`JOGAR ${name}`}</Button>
+                <Button disabled={!!error}>{`JOGAR ${name}`}</Button>
               </Widget.Form>
             </Widget.Content>
           </Widget>
@@ -133,7 +191,7 @@ export default function Home() {
             initial="hidden"
             animate="show"
           >
-            <ExternalQuiz quizExternal={db.external} playerName={name} />
+            <ExternalQuiz error={error} externalDb={data} playerName={name} />
           </motion.div>
           <Footer
             as={motion.footer}

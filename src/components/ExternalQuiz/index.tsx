@@ -1,28 +1,31 @@
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import url from 'url';
 
+import { ExternalDB } from '../../../pages';
 import LoadingWidget from '../LoadingWidget';
+import Quiz from '../Quiz';
 import Widget from '../Widget';
 
 interface Props {
-  quizExternal: string[];
+  externalDb: ExternalDB;
   playerName: string;
+  error: string | null;
 }
 
-export default function ExternalQuiz({ quizExternal, playerName }: Props) {
+export default function ExternalQuiz({ externalDb, playerName, error }: Props) {
   const { push } = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  async function handlePlayQuiz(title: string, user: string) {
-    if (!playerName) {
-      return alert('Coloque um nome para jogar!');
+  async function handlePlayQuiz(_id: string) {
+    if (error) {
+      return;
     }
 
     setIsLoading(true);
 
-    return push(`/quiz/${title}___${user}?name=${playerName}`);
+    // eslint-disable-next-line consistent-return
+    return push(`/quiz/${_id}?name=${playerName}`);
   }
 
   return (
@@ -39,36 +42,24 @@ export default function ExternalQuiz({ quizExternal, playerName }: Props) {
             </p>
 
             <ul>
-              {quizExternal.map((quizUrl) => {
-                const quiz = url
-                  .parse(quizUrl)
-                  .hostname?.replace('.', ' ')
-                  .replace('.vercel.app', '')
-                  .split(' ');
-
-                if (quiz) {
-                  const title = quiz[0];
-                  const user = quiz[1];
-
-                  return (
-                    <li key={quizUrl}>
-                      <Widget.Topic
-                        as={motion.a}
-                        onClick={() => handlePlayQuiz(title, user)}
-                        whileTap={{
-                          scale: 0.9,
-                        }}
-                        whileHover={{
-                          scale: 1.04,
-                        }}
-                      >
-                        {`${user}/${title}`}
-                      </Widget.Topic>
-                    </li>
-                  );
-                }
-
-                return null;
+              {externalDb.data.map(({ _id, author, title, bg }) => {
+                return (
+                  <li key={_id}>
+                    <motion.div
+                      whileTap={{
+                        scale: 0.9,
+                      }}
+                      whileHover={{
+                        scale: 1.04,
+                      }}
+                    >
+                      <Quiz imageUrl={bg} onClick={() => handlePlayQuiz(_id)}>
+                        <h1>{title}</h1>
+                        <p>By {author}</p>
+                      </Quiz>
+                    </motion.div>
+                  </li>
+                );
               })}
             </ul>
           </Widget.Content>

@@ -1,24 +1,7 @@
-import axios, { Method } from 'axios';
+import axios from 'axios';
 
-interface IApi {
-  baseURL?: string;
-  url: string;
-  method: Method;
-}
+const api = axios.create({
+  baseURL: process.env.API_URL,
+});
 
-export default async function api({
-  baseURL,
-  url,
-  method,
-}: IApi): Promise<any> {
-  const apiAxios = axios.create({
-    baseURL: baseURL || '/api',
-  });
-
-  const response = await apiAxios({
-    method,
-    url,
-  });
-
-  return response;
-}
+export default api;

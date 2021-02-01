@@ -28,6 +28,9 @@ module.exports = {
     'react/jsx-filename-extension': 'off',
     'react/jsx-one-expression-per-line': 'off',
     'react/react-in-jsx-scope': 'off',
+    'prefer-destructuring': 'off',
+    'react/require-default-props': 'off',
+    'import/prefer-default-export': 'off',
     'import-helpers/order-imports': [
       'warn',
       {

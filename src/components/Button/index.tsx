@@ -1,16 +1,14 @@
 /* eslint-disable react/require-default-props */
 import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { ReactNode, ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
-interface Props {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  disabled?: boolean;
-  type?: 'button' | 'submit' | 'reset' | undefined;
 }
 
 const ButtonBase = styled.button`
-  background-color: ${({ theme }) => theme.colors.buttonFilled};
+  background-color: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.contrastText};
   border-radius: ${({ theme }) => theme.borderRadius};
   border: 0;
@@ -38,20 +36,17 @@ const ButtonBase = styled.button`
   }
 `;
 
-export default function Button({ children, disabled, type }: Props) {
+export default function Button({ children, ...rest }: Props) {
   return (
-    <ButtonBase
-      as={motion.button}
+    <motion.div
       whileTap={{
         scale: 0.9,
       }}
       whileHover={{
         scale: 1.04,
       }}
-      disabled={disabled}
-      type={type}
     >
-      {children}
-    </ButtonBase>
+      <ButtonBase {...rest}>{children}</ButtonBase>
+    </motion.div>
   );
 }

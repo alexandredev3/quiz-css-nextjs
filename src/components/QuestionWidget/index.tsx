@@ -124,17 +124,16 @@ export default function QuestionWidget({
             );
           })}
 
-          <Widget.Button>
-            {!resultState && (
-              <Button type="submit" disabled={hasAlternativeSelected}>
-                Confirmar
-              </Button>
-            )}
-
+          {!resultState && (
+            <Button type="submit" disabled={hasAlternativeSelected}>
+              Confirmar
+            </Button>
+          )}
+          <Widget.Icons>
             {resultState === 'SUCCESS' && <CorrectIcon />}
 
             {resultState === 'ERROR' && <WrongIcon />}
-          </Widget.Button>
+          </Widget.Icons>
         </Widget.Form>
       </Widget.Content>
     </Widget>

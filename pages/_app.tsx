@@ -1,5 +1,6 @@
-import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import Head from 'next/head';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
+
 import db from '../db.json';
 
 interface Props {
@@ -20,7 +21,10 @@ const GlobalStyle = createGlobalStyle`
     flex-direction: column;
     font-family: 'Lato', sans-serif;
 
-    color: ${db.theme.colors.contrastText};
+    color: ${({ theme }) => {
+      // @ts-ignore
+      return theme.colors.contrastText;
+    }};
   }
 
   html, body {
