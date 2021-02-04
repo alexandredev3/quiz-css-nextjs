@@ -59,6 +59,8 @@ export default function Home({
     const nameHasThreeCharacters = name.length < 3;
     const nameHasEighteenCharacters = name.length > 18;
 
+    console.log(!name);
+
     if (!name) {
       return setError('Coloque um nome para Jogar!');
     }
@@ -79,7 +81,6 @@ export default function Home({
     (event: FormEvent) => {
       event?.preventDefault();
 
-      // fazer validação no Input
       if (error) {
         return;
       }
@@ -87,7 +88,7 @@ export default function Home({
       // eslint-disable-next-line consistent-return
       return router.push(`/quiz?name=${name}`);
     },
-    [name]
+    [name, error]
   );
 
   return (
@@ -148,10 +149,7 @@ export default function Home({
             </Widget.Header>
             <Widget.Content>
               <Widget.Form onSubmit={handleSubmit}>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Praesentium, aspernatur.
-                </p>
+                <p>{db.description}</p>
                 <Input
                   error={error}
                   placeholder="Diz aí seu nome pra jogar :)"

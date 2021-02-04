@@ -1,4 +1,5 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import Head from 'next/head';
 import { ThemeProvider } from 'styled-components';
 
 import db from '../../db.json';
@@ -6,6 +7,8 @@ import api from '../../services/api';
 import QuizScreen from '../../src/screens';
 
 interface ExternalDB {
+  title: string;
+  description: string;
   bg: string;
   theme: any;
   questions: Array<{
@@ -46,6 +49,22 @@ export default function QuizDaGaleraPage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <div>
+      <Head>
+        <title>{externalDB.title}</title>
+
+        <meta name="description" content={externalDB.description} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={externalDB.bg} />
+        <meta property="og:title" content={externalDB.title} />
+        <meta property="og:description" content={externalDB.description} />
+        <meta property="og:image" content={externalDB.bg} />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:title" content={externalDB.title} />
+        <meta property="twitter:description" content={externalDB.description} />
+        <meta property="twitter:image" content={externalDB.bg} />
+      </Head>
       <ThemeProvider theme={externalDB.theme}>
         <QuizScreen externalQuiz={externalDB} />
       </ThemeProvider>
