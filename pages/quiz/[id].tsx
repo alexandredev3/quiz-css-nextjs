@@ -1,16 +1,17 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
-import Head from 'next/head';
+import { GetServerSidePropsContext, GetServerSideProps } from 'next';
 import { ThemeProvider } from 'styled-components';
 
 import db from '../../db.json';
 import api from '../../services/api';
 import QuizScreen from '../../src/screens';
 
-interface ExternalDB {
+interface Data {
   title: string;
   description: string;
+  author: string;
   bg: string;
   theme: any;
+  // eslint-disable-next-line react/no-unused-prop-types
   questions: Array<{
     image: string;
     title: string;
@@ -20,17 +21,23 @@ interface ExternalDB {
   }>;
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+interface Props {
+  data: Data;
+}
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const { id } = context.query as { id: string; name: string };
 
   try {
     const response = await api.get(`/quiz?id=${id}`);
 
-    const data: ExternalDB = response.data;
+    const data = response.data;
 
     return {
       props: {
-        externalDB: data,
+        data,
       },
     };
   } catch {
@@ -38,36 +45,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     context.res.statusCode = 500;
     return {
       props: {
-        externalDB: db,
+        data: db,
       },
     };
   }
-}
+};
 
-export default function QuizDaGaleraPage({
-  externalDB,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function QuizDaGaleraPage(props: Props) {
   return (
-    <div>
-      <Head>
-        <title>{externalDB.title}</title>
-
-        <meta name="description" content={externalDB.description} />
-
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={externalDB.bg} />
-        <meta property="og:title" content={externalDB.title} />
-        <meta property="og:description" content={externalDB.description} />
-        <meta property="og:image" content={externalDB.bg} />
-
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:title" content={externalDB.title} />
-        <meta property="twitter:description" content={externalDB.description} />
-        <meta property="twitter:image" content={externalDB.bg} />
-      </Head>
-      <ThemeProvider theme={externalDB.theme}>
-        <QuizScreen externalQuiz={externalDB} />
+    <>
+      <ThemeProvider theme={props.data.theme}>
+        <QuizScreen externalQuiz={props.data} />
       </ThemeProvider>
-    </div>
+    </>
   );
 }

@@ -9,6 +9,9 @@ import ResultWidget from '../../src/components/ResultWidget';
 
 interface Props {
   externalQuiz: {
+    title: string;
+    description: string;
+    author: string;
     bg: string;
     questions: Array<{
       image: string;
@@ -54,7 +57,25 @@ export default function QuizPage({ externalQuiz }: Props) {
   return (
     <>
       <Head>
-        <title>AluraQuiz - Modelo Base</title>
+        <title>{externalQuiz.title}</title>
+
+        <meta name="description" content={externalQuiz.description} />
+
+        <meta name="author" content={externalQuiz.author} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={externalQuiz.bg} />
+        <meta property="og:title" content={externalQuiz.title} />
+        <meta property="og:description" content={externalQuiz.description} />
+        <meta property="og:image" content={externalQuiz.bg} />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:title" content={externalQuiz.title} />
+        <meta
+          property="twitter:description"
+          content={externalQuiz.description}
+        />
+        <meta property="twitter:image" content={externalQuiz.bg} />
       </Head>
       <QuizBackground backgroundImage={externalQuiz.bg}>
         <QuizContainer>

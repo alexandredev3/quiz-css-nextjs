@@ -31,6 +31,7 @@ module.exports = {
     'prefer-destructuring': 'off',
     'react/require-default-props': 'off',
     'import/prefer-default-export': 'off',
+    'react/destructuring-assignment': 'off',
     'import-helpers/order-imports': [
       'warn',
       {

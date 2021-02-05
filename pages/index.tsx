@@ -59,8 +59,6 @@ export default function Home({
     const nameHasThreeCharacters = name.length < 3;
     const nameHasEighteenCharacters = name.length > 18;
 
-    console.log(!name);
-
     if (!name) {
       return setError('Coloque um nome para Jogar!');
     }
@@ -95,6 +93,36 @@ export default function Home({
     <>
       <Head>
         <title>AluraQuiz - Modelo Base</title>
+        <meta name="author" content="Alexandre Costa" />
+        <meta name="keywords" content="quiz-alura, alura, nextjs, react" />
+        <meta
+          name="description"
+          content="Quiz CSS da Alura, Feito por Alexandre com 💚"
+        />
+
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://quiz-css-alexandredev3.vercel.app/"
+        />
+        <meta property="og:title" content="Quiz CSS da Alura" />
+        <meta
+          property="og:description"
+          content="Quiz CSS da Alura, Feito por Alexandre com 💚"
+        />
+        <meta property="og:image" content={db.bg} />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta
+          property="twitter:url"
+          content="https://quiz-css-alexandredev3.vercel.app/"
+        />
+        <meta property="twitter:title" content="Quiz CSS da Alura" />
+        <meta
+          property="twitter:description"
+          content="Quiz CSS da Alura, Feito por Alexandre com 💚"
+        />
+        <meta property="twitter:image" content={db.bg} />
       </Head>
       <QuizBackground backgroundImage={db.bg}>
         <QuizContainer>

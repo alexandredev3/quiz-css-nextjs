@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 
 import { NowRequest, NowResponse } from '@vercel/node';
 
-import { MongoConnection } from './externalDb';
+import { MongoConnection } from './_lib/MongoConnection';
 
 export default async function quiz(request: NowRequest, response: NowResponse) {
   const { id } = request.query;

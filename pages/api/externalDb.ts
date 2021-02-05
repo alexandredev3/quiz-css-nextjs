@@ -1,23 +1,6 @@
-import { MongoClient } from 'mongodb';
-
 import { NowRequest, NowResponse } from '@vercel/node';
 
-export async function MongoConnection() {
-  const uri = process.env.MONGO_URI;
-
-  if (!uri) {
-    throw new Error('MONGO URI WAS NOT PROVIDED');
-  }
-
-  const client = await MongoClient.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-
-  const db = client.db('quizes');
-
-  return db;
-}
+import { MongoConnection } from './_lib/MongoConnection';
 
 export default async function externalDb(
   _request: NowRequest,
